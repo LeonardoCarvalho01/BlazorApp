@@ -11,5 +11,10 @@
         public decimal Price { get; set; }
         public bool Vegetarian { get; set; }
         public bool Vegan { get; set; }
+        public int MinimumSize { get; set; }
+        public int MaximumSize { get; set; }
+        public int Size { get; set; }
+        public string GetFormattedTotalPrice() => BasePrice.ToString("0.00");
+        public int DefaultSize { get; set; }
     }
 }

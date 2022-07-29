@@ -15,15 +15,6 @@ Welcome to your new app.
 <Counter IncrementAmount ="1" />
 <hr />
 
-@code {
-    List<Pizza> specials = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        specials = await HttpClient.GetFromJsonAsync<List<Pizza>>(NavigationManager.BaseUri + "specials");
-    }
-}
-
 <div class="main">
   <h1>Blazing Pizzas</h1>
   <ul class="pizza-cards">
@@ -31,7 +22,7 @@ Welcome to your new app.
         {
             @foreach (var special in specials)
             {
-                <li style="background-image: url('@special.ImageUrl')">
+                <li @onclick="@(() => ShowConfigurePizzaDialog(special))" style="background-image: url('@special.ImageUrl')">
                   <div class="pizza-info">
                       <span class="title">@special.Name</span>
                         @special.Description
@@ -42,3 +33,34 @@ Welcome to your new app.
         }
   </ul>
 </div>
+
+
+@if (showingConfigureDialog)
+{
+    <ConfigurePizzaDialog Pizza="configuringPizza" />
+}
+
+@code {
+    List<Pizza> specials = new();
+
+    Pizza configuringPizza;
+
+    bool showingConfigureDialog;
+
+    protected override async Task OnInitializedAsync()
+    {
+        specials = await HttpClient.GetFromJsonAsync<List<Pizza>>(NavigationManager.BaseUri + "specials");
+    }
+
+    void ShowConfigurePizzaDialog(Pizza special)
+    {
+        configuringPizza = new Pizza()
+        {
+            Name = special.Name,
+            PizzaId = special.PizzaId,
+            Size = special.DefaultSize
+        };
+
+        showingConfigureDialog = true;
+    }
+}
