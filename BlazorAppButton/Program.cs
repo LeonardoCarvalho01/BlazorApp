@@ -35,8 +35,7 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 
-// Iniciar a Base de Dados
-
+// Initialize the database
 var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 using (var scope = scopeFactory.CreateScope())
 {

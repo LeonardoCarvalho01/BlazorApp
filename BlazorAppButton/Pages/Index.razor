@@ -1,66 +1,51 @@
-﻿@inject HttpClient HttpClient
-@inject NavigationManager NavigationManager
-
-@page "/"
+﻿@page "/"
 @using BlazorAppButton.Data
+    @inject HttpClient HttpClient
+    @inject NavigationManager NavigationManager
 
-<PageTitle>Index</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-<Counter IncrementAmount ="1" />
-<hr />
-
-<div class="main">
-  <h1>Blazing Pizzas</h1>
-  <ul class="pizza-cards">
-    @if (specials != null)
+    <div class="main">
+      <h1>Blazing Pizzas</h1>
+      <ul class="pizza-cards">
+        @if (specials != null)
         {
-            @foreach (var special in specials)
-            {
-                <li @onclick="@(() => ShowConfigurePizzaDialog(special))" style="background-image: url('@special.ImageUrl')">
-                  <div class="pizza-info">
-                      <span class="title">@special.Name</span>
-                        @special.Description
-                        <span class="price">@special.GetFormattedBasePrice() €</span>
-                  </div>
-                </li>
-            }
+          @foreach (var special in specials)
+          {
+            <li @onclick="@(() => ShowConfigurePizzaDialog(special))" style="background-image: url('@special.ImageUrl')">
+              <div class="pizza-info">
+              <span class="title">@special.Name</span>
+              @special.Description
+              <span class="price">@special.GetFormattedBasePrice()</span>
+              </div>
+            </li>
+          }
         }
-  </ul>
-</div>
+      </ul>
+    </div>
 
-
-@if (showingConfigureDialog)
-{
-    <ConfigurePizzaDialog Pizza="configuringPizza" />
-}
-
-@code {
-    List<Pizza> specials = new();
-
-    Pizza configuringPizza;
-
-    bool showingConfigureDialog;
-
-    protected override async Task OnInitializedAsync()
+    @if (showingConfigureDialog)
     {
-        specials = await HttpClient.GetFromJsonAsync<List<Pizza>>(NavigationManager.BaseUri + "specials");
+        <ConfigurePizzaDialog Pizza="configuringPizza" />
     }
 
-    void ShowConfigurePizzaDialog(Pizza special)
-    {
-        configuringPizza = new Pizza()
-        {
-            Name = special.Name,
-            PizzaId = special.PizzaId,
-            Size = special.DefaultSize
-        };
+    @code {
+      List<PizzaSpecial> specials = new();
+      Pizza configuringPizza;
+      bool showingConfigureDialog;
 
-        showingConfigureDialog = true;
+      protected override async Task OnInitializedAsync()
+      {
+          specials = await HttpClient.GetFromJsonAsync<List<PizzaSpecial>>(NavigationManager.BaseUri + "specials");
+      }
+
+      void ShowConfigurePizzaDialog(PizzaSpecial special)
+      {
+          configuringPizza = new Pizza()
+          {
+              Special = special,
+              SpecialId = special.Id,
+              Size = Pizza.DefaultSize
+          };
+
+          showingConfigureDialog = true;
+      }
     }
-}

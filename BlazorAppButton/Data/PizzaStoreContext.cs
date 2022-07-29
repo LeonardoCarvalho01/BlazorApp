@@ -7,6 +7,6 @@ namespace BlazorAppButton.Data
         public PizzaStoreContext(DbContextOptions options) : base(options)
         {
         }
-        public DbSet<Pizza> Pizza { get; set; }
+        public DbSet<PizzaSpecial> Specials { get; set; }
     }
 }
